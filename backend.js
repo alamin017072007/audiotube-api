@@ -1,7 +1,12 @@
 const app = require('express')() 
-const server = require('http').createServer(app)
+const http = require('http')
+const server = http.createServer(app)
+
+const https= require('https')
+
 const io = require('socket.io')(server)
 const ytdl = require('ytdl-core')
+const fs = require('fs')
 
 // hello world
 const _authKey = "1234"
@@ -96,6 +101,24 @@ const getRes=async(url, type)=>{
         case "downloadonly":
             const dOnly = await downloadOnlyResponse(url)  
             return dOnly
+        break
+
+
+        case "savemp4":
+        const r = await videoOnlyResponse(url)
+        https.get(r.url, (res) => {
+
+           const path = r.url;
+           const writeStream = fs.createWriteStream(path);
+        
+           res.pipe(writeStream);
+        
+           writeStream.on("finish", () => {
+              writeStream.close();
+              console.log("Download Completed!");
+           })
+        })
+       
         break
         
         case "relatedonly":
@@ -239,11 +262,16 @@ const getDownloadInfo=(yt)=>{
     const audios =  ytdl.filterFormats(yt.formats, 'audioonly')
 
     const audioOnly = ytdl.chooseFormat(audios, {quality:"140"})
-    var videoOnly= ytdl.chooseFormat(videos, {quality:"22"})
-
-    if(videoOnly==null){
+    try{
+        var videoOnly= ytdl.chooseFormat(videos, {quality:"22",})
+    }catch(e){
         videoOnly= videos[0]
     }
+
+
+    // if(videoOnly==null){
+        
+    // }
 
     return {
         "videoOnly":videoOnly, 
