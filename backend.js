@@ -39,10 +39,10 @@ io.on('connection', (socket)=>{
 
 app.get('/', async (req, res)=>{
 
-    const url = req.query.url
+    var url = req.query.url
     const type= req.query.type
     const authKey = req.query.authkey 
-    url = url.replace('live/', "watch?v=")
+
     const body = await getRes(url, type)
    // const r = await validateRequest(url, type, authKey)
     res.status(200).json(body)
@@ -86,7 +86,9 @@ const validateRequest=async(url, type, authKey)=>{
 
 
 const getRes=async(url, type)=>{
-    
+    if(url!=null){
+        url= url.replace('live/', "watch?v=")
+    }
     switch(type){
         case "all":
         const data = await allResponse(url)
@@ -287,8 +289,8 @@ const getRandom=(min, max)=>{
 }
 
 
-server.listen(3000, ()=>{
-    console.log('listening on 3000')
+server.listen(3500, ()=>{
+    console.log('listening on 3500')
 })
 
 
