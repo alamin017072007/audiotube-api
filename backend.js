@@ -42,6 +42,7 @@ app.get('/', async (req, res)=>{
     const url = req.query.url
     const type= req.query.type
     const authKey = req.query.authkey 
+    url = url.replace('live/', "watch?v=")
     const body = await getRes(url, type)
    // const r = await validateRequest(url, type, authKey)
     res.status(200).json(body)
