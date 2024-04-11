@@ -1,5 +1,6 @@
 const app = require('express')() 
 const http = require('http')
+const HttpsProxyAgent = require('https-proxy-agent')
 const server = http.createServer(app)
 
 const https= require('https')
@@ -7,10 +8,16 @@ const https= require('https')
 const io = require('socket.io')(server)
 const ytdl = require('ytdl-core')
 const fs = require('fs')
+const f= require('axios')
+
+const proxy = 'http://111.111.111.111:8080';
+const agent = new HttpsProxyAgent.HttpsProxyAgent(proxy);
+
+
 
 // hello world
 const _authKey = "1234"
-const urlList=["https://www.youtube.com/watch?v=QOMnzE2Ujzc", 
+const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc", 
                 "https://www.youtube.com/watch?v=s-00rrCI8ac", 
                  "https://www.youtube.com/watch?v=dWBgNHT4ipE", 
                  "https://www.youtube.com/watch?v=rL6qQ49hBlQ", 
@@ -24,30 +31,69 @@ const urlList=["https://www.youtube.com/watch?v=QOMnzE2Ujzc",
                 ] 
 
 
-io.on('connection', (socket)=>{
-    console.log(`connected ${socket.id}`)
-    socket.on('listen', async(json)=>{
+// io.on('connection', (socket)=>{
+//     console.log(`connected ${socket.id}`)
+//     socket.on('listen', async(json)=>{
          
-        console.log(`new reuqest - ${socket.id} - ${url}`)
-        const res = await getRes(json.url, json.type)
-        socket.emit("listen",res)
+//         console.log(`new reuqest - ${socket.id} - ${url}`)
+//         const res = await getRes(json.url, json.type)
+//         socket.emit("listen",res)
        
-    })
-})
+//     })
+// })
 
 
 
 app.get('/', async (req, res)=>{
 
+//     var url = req.query.url
+//     const type= req.query.type
+//     const authKey = req.query.authkey 
+
+//     const objectToFind= '?si='
+//     if( url!=null && url.toString().indexOf(objectToFind) > -1){
+//         url= url.split(objectToFind)[0]
+//     }
+
+//     const body = await getRes(url, type)
+//    // const r = await validateRequest(url, type, authKey)
+//     res.status(200).json(body)
+ 
+
+
+const urls=['https://audiotubeapi.onrender.com',
+'https://audiotubeapi-2.onrender.com',
+'https://audiotubeapi.onrender.com',
+'https://audiotubeapi-2.onrender.com']
+
+
     var url = req.query.url
     const type= req.query.type
-    const authKey = req.query.authkey 
+    const authKey = req.query.authkey
 
-    const body = await getRes(url, type)
+//updated on 26/10/2023 12:20PM
+
+    const objectToFind= '?si='
+    if( url!=null && url.toString().indexOf(objectToFind) > -1){
+        url= url.split(objectToFind)[0]
+    }
+// end
+
+    //const body = await getRes(url, type)
    // const r = await validateRequest(url, type, authKey)
-    res.status(200).json(body)
- 
+//     const urlonr=urls.at(1)
+     const urlonr= urls.at(getRandom(0,urls.length-1))
+     const body= await f.get(`${urlonr}?url=${url}&type=${type}`)
+     //const b= body.data.add = {'asff':''}
+
+
+    body.data.requested_url= urlonr
+    res.status(200).json(body.data)
+
 })
+
+
+
 
 
 const validateRequest=async(url, type, authKey)=>{
@@ -265,8 +311,9 @@ const getDownloadInfo=(yt)=>{
     const audios =  ytdl.filterFormats(yt.formats, 'audioonly')
 
     const audioOnly = ytdl.chooseFormat(audios, {quality:"140"})
+
     try{
-        var videoOnly= ytdl.chooseFormat(videos, {quality:"22",})
+       var videoOnly= ytdl.chooseFormat(videos, {quality:"18",})
     }catch(e){
         videoOnly= videos[0]
     }
