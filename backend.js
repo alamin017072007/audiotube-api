@@ -79,11 +79,15 @@ const urls=['https://audiotubeapi.onrender.com',
     }
 // end
 
-    //const body = await getRes(url, type)
-   // const r = await validateRequest(url, type, authKey)
-//     const urlonr=urls.at(1)
-     const urlonr= urls.at(getRandom(0,urls.length-1))
-     const body= await f.get(`${urlonr}?url=${url}&type=${type}`)
+    const body = await getRes(url, type)
+   const r = await validateRequest(url, type, authKey)
+    const urlonr=urls.at(1)
+
+
+
+  ////// commented on 24/9/24 
+     // const urlonr= urls.at(getRandom(0,urls.length-1))
+     // const body= await f.get(`${urlonr}?url=${url}&type=${type}`)
      //const b= body.data.add = {'asff':''}
 
 
