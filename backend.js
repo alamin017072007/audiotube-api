@@ -46,53 +46,50 @@ const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
 
 app.get('/', async (req, res)=>{
 
-//     var url = req.query.url
-//     const type= req.query.type
-//     const authKey = req.query.authkey 
-
-//     const objectToFind= '?si='
-//     if( url!=null && url.toString().indexOf(objectToFind) > -1){
-//         url= url.split(objectToFind)[0]
-//     }
-
-//     const body = await getRes(url, type)
-//    // const r = await validateRequest(url, type, authKey)
-//     res.status(200).json(body)
- 
-
-
-const urls=['https://audiotubeapi.onrender.com',
-'https://audiotubeapi-2.onrender.com',
-'https://audiotubeapi.onrender.com',
-'https://audiotubeapi-2.onrender.com']
-
-
     var url = req.query.url
     const type= req.query.type
-    const authKey = req.query.authkey
-
-//updated on 26/10/2023 12:20PM
+    const authKey = req.query.authkey 
 
     const objectToFind= '?si='
     if( url!=null && url.toString().indexOf(objectToFind) > -1){
         url= url.split(objectToFind)[0]
     }
-// end
 
     const body = await getRes(url, type)
-   const r = await validateRequest(url, type, authKey)
-    const urlonr=urls.at(1)
+   // const r = await validateRequest(url, type, authKey)
+    res.status(200).json(body)
+ 
 
 
+// const urls=['https://audiotubeapi.onrender.com',
+// 'https://audiotubeapi-2.onrender.com',
+// 'https://audiotubeapi.onrender.com',
+// 'https://audiotubeapi-2.onrender.com']
 
-  ////// commented on 24/9/24 
-     // const urlonr= urls.at(getRandom(0,urls.length-1))
-     // const body= await f.get(`${urlonr}?url=${url}&type=${type}`)
-     //const b= body.data.add = {'asff':''}
+
+//     var url = req.query.url
+//     const type= req.query.type
+//     const authKey = req.query.authkey
+
+// //updated on 26/10/2023 12:20PM
+
+//     const objectToFind= '?si='
+//     if( url!=null && url.toString().indexOf(objectToFind) > -1){
+//         url= url.split(objectToFind)[0]
+//     }
+// // end
 
 
-    body.data.requested_url= urlonr
-    res.status(200).json(body.data)
+//     const urlonr=urls.at(1)
+
+//   ////// commented on 24/9/24 
+//      // const urlonr= urls.at(getRandom(0,urls.length-1))
+//      // const body= await f.get(`${urlonr}?url=${url}&type=${type}`)
+//      //const b= body.data.add = {'asff':''}
+
+
+//     body.data.requested_url= urlonr
+//     res.status(200).json(body.data)
 
 })
 
