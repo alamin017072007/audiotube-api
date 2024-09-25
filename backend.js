@@ -46,11 +46,14 @@ const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
 
 app.get('/', async (req, res)=>{
 
+<<<<<<< HEAD
     try{
 
 
     /////// ------------------ code for api ---------------
 
+=======
+>>>>>>> f2feda33815edce51dc00f029f6314944338fb45
     var url = req.query.url
     const type= req.query.type
     const authKey = req.query.authkey 
@@ -58,6 +61,7 @@ app.get('/', async (req, res)=>{
     const objectToFind= '?si='
     if( url!=null && url.toString().indexOf(objectToFind) > -1){
         url= url.split(objectToFind)[0]
+<<<<<<< HEAD
     }
 
     const body = await getRes(url, type)
@@ -130,6 +134,45 @@ app.get('/', async (req, res)=>{
     }catch(err){
         res.status(490).send(err.toString())
     }
+=======
+    }
+
+    const body = await getRes(url, type)
+   // const r = await validateRequest(url, type, authKey)
+    res.status(200).json(body)
+ 
+
+
+// const urls=['https://audiotubeapi.onrender.com',
+// 'https://audiotubeapi-2.onrender.com',
+// 'https://audiotubeapi.onrender.com',
+// 'https://audiotubeapi-2.onrender.com']
+
+
+//     var url = req.query.url
+//     const type= req.query.type
+//     const authKey = req.query.authkey
+
+// //updated on 26/10/2023 12:20PM
+
+//     const objectToFind= '?si='
+//     if( url!=null && url.toString().indexOf(objectToFind) > -1){
+//         url= url.split(objectToFind)[0]
+//     }
+// // end
+
+
+//     const urlonr=urls.at(1)
+
+//   ////// commented on 24/9/24 
+//      // const urlonr= urls.at(getRandom(0,urls.length-1))
+//      // const body= await f.get(`${urlonr}?url=${url}&type=${type}`)
+//      //const b= body.data.add = {'asff':''}
+
+
+//     body.data.requested_url= urlonr
+//     res.status(200).json(body.data)
+>>>>>>> f2feda33815edce51dc00f029f6314944338fb45
 
 })
 
