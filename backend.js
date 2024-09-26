@@ -9,6 +9,8 @@ const ytdl = require('@distube/ytdl-core')
 const fs = require('fs')
 const f= require('axios')
 const { randomInt } = require('crypto')
+const { getRandomIPv6 } = require("@distube/ytdl-core/lib/utils");
+
 
 const port = 1000
 
@@ -367,7 +369,285 @@ const normalJsonResponse=(yt, dInfo)=>{
 
 
 const getYT= async(url)=>{
-    const yt= await ytdl.getInfo(url)
+    // const agentForAnotherRandomIP = ytdl.createAgent(['13.37.73.214'], {
+    //     localAddress: getRandomIPv6("2001:2::/48"),
+    //   });
+
+    var c = [
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "__Secure-1PAPISID",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": true,
+            "session": true,
+            "storeId": "0",
+            "value": "4n25HIsIhxtgmYMh/AB_eMAqqfWzO21t-S",
+            "id": 1
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "__Secure-1PSID",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": true,
+            "session": true,
+            "storeId": "0",
+            "value": "g.a000oQhankEDSblWD17tFXO23KD71wAoPI8z-T_qCmR0pBVQWnKk1LW2uog1XOc5sa5Gp8rkEgACgYKAZQSARASFQHGX2MiLGgTYe3LPvywILipcFo47BoVAUF8yKo8gA_H9OcZ6pyGOOapJdgO0076",
+            "id": 2
+        },
+        {
+            "domain": ".youtube.com",
+            "expirationDate": 1758869286.375674,
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "__Secure-1PSIDCC",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": true,
+            "session": false,
+            "storeId": "0",
+            "value": "AKEyXzV404fu0k_189g5XOb54n2nhkvD51nXp9f5-6LAtZbMynIq2mnKoz1t3Qltuq7keZI43Ec",
+            "id": 3
+        },
+        {
+            "domain": ".youtube.com",
+            "expirationDate": 1758869119.620666,
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "__Secure-1PSIDTS",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": true,
+            "session": false,
+            "storeId": "0",
+            "value": "sidts-CjIBQlrA-BaTw2O-HvJJCykF9zl3piP1NB5i_znmghWMmbLku8sxR3-U9bBe1pop1fBuQxAA",
+            "id": 4
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "__Secure-3PAPISID",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": "0",
+            "value": "4n25HIsIhxtgmYMh/AB_eMAqqfWzO21t-S",
+            "id": 5
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "__Secure-3PSID",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": "0",
+            "value": "g.a000oQhankEDSblWD17tFXO23KD71wAoPI8z-T_qCmR0pBVQWnKksQEkCmHxfCjoK8BDVwyPTgACgYKAc4SARASFQHGX2MiMvC9qRAEPIXLkQe5t9qifBoVAUF8yKp8k58gLt8LT0HD4HlQgus20076",
+            "id": 6
+        },
+        {
+            "domain": ".youtube.com",
+            "expirationDate": 1758869286.375714,
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "__Secure-3PSIDCC",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": "0",
+            "value": "AKEyXzVlGlmvFR5Ao09A_YUXxsT3N8GFzwC_3EOd_ryV-ijeEsS6o_yMWPcVIvk_xnfYaQXCopw",
+            "id": 7
+        },
+        {
+            "domain": ".youtube.com",
+            "expirationDate": 1758869119.620771,
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "__Secure-3PSIDTS",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": "0",
+            "value": "sidts-CjIBQlrA-BaTw2O-HvJJCykF9zl3piP1NB5i_znmghWMmbLku8sxR3-U9bBe1pop1fBuQxAA",
+            "id": 8
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "APISID",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": false,
+            "session": true,
+            "storeId": "0",
+            "value": "p9Lpg2DKYQCZPFLQ/AgrDSOheuuycfH2C-",
+            "id": 9
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "HSID",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": false,
+            "session": true,
+            "storeId": "0",
+            "value": "A8zLZCRp2uW04nqXr",
+            "id": 10
+        },
+        {
+            "domain": ".youtube.com",
+            "expirationDate": 1761702175.824887,
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "LOGIN_INFO",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": "0",
+            "value": "AFmmF2swRAIgVPbfUQ3i9xXNMgQvzEQSdqp_UZAlRKs_15RVlZqjRI0CIEdvPZB3V1ug3UKdr_LFeRhrRrgkqRG5NNgA3sFHmZMk:QUQ3MjNmd0dSN1BCekd2WGtiOGp2VUhGbzRoRThYdDZYcTlqb05leXN3aDdzaTlTWmpwNU93VGtVYTJOZzVPcnhXT212SENtbUliMHdXcXh4WU1nT3R1QlA5cHhySnhXV18xcjl1alU0ejZROXVsMUZDWWt5OG9YNDg1aEt0cy1JQ3FWV0ltYzVOSVZqWDIyaks1SmhjYnFLdXZvWi1UVElB",
+            "id": 11
+        },
+        {
+            "domain": ".youtube.com",
+            "expirationDate": 1761893191.785208,
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "PREF",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": true,
+            "session": false,
+            "storeId": "0",
+            "value": "tz=Asia.Dhaka&f6=40000000&f7=100&f5=30000",
+            "id": 12
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "SAPISID",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": true,
+            "session": true,
+            "storeId": "0",
+            "value": "4n25HIsIhxtgmYMh/AB_eMAqqfWzO21t-S",
+            "id": 13
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "SID",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": false,
+            "session": true,
+            "storeId": "0",
+            "value": "g.a000oQhankEDSblWD17tFXO23KD71wAoPI8z-T_qCmR0pBVQWnKkawdSEGOaQG6AQPMcFDAA7wACgYKAXQSARASFQHGX2MiHsCtjpMV4RDQv6eGcD64PhoVAUF8yKoVLmki13ins7N9bMUvqvCX0076",
+            "id": 14
+        },
+        {
+            "domain": ".youtube.com",
+            "expirationDate": 1758869286.375538,
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "SIDCC",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": false,
+            "session": false,
+            "storeId": "0",
+            "value": "AKEyXzXcqxdlWCmecYxx63GqRpvoMUseRNUWqqRYzcqSU5JiLw1bYT-B-UmVV1xixsEwqwpGWw",
+            "id": 15
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "SSID",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": true,
+            "session": true,
+            "storeId": "0",
+            "value": "APx4qCh6s7LPuO6WI",
+            "id": 16
+        },
+        {
+            "domain": ".youtube.com",
+            "expirationDate": 1727698780.338721,
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "VISITOR_INFO1_LIVE",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": "0",
+            "value": "U58weXlhjVc",
+            "id": 17
+        },
+        {
+            "domain": ".youtube.com",
+            "expirationDate": 1727698780.338766,
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "VISITOR_PRIVACY_METADATA",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": "0",
+            "value": "CgJCRBIEGgAgEw%3D%3D",
+            "id": 18
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "wide",
+            "path": "/",
+            "sameSite": "unspecified",
+            "secure": false,
+            "session": true,
+            "storeId": "0",
+            "value": "1",
+            "id": 19
+        },
+        {
+            "domain": ".youtube.com",
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "YSC",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": "0",
+            "value": "3fw0k6bk89c",
+            "id": 20
+        }
+        ] ;
+    
+    const a = ytdl.createAgent(c)
+   // const agent = ytdl.createProxyAgent({ uri: "http://51.68.93.11:46979"}, c);
+    const yt= await ytdl.getInfo(url, {a})
     return yt;
 }
 
