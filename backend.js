@@ -46,7 +46,7 @@ const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
 
 app.get('/', async (req, res)=>{
 
-    try{
+  //  try{
 
 
     /////// ------------------ code for api ---------------
@@ -126,9 +126,9 @@ app.get('/', async (req, res)=>{
 
 
 
-    }catch(err){
-        res.status(490).send(err.toString())
-    }
+    // }catch(err){
+    //     res.status(490).send(err.toString())
+    // }
 
 })
 
