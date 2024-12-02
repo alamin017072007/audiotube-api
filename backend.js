@@ -10,10 +10,7 @@ const ytdl = require('@distube/ytdl-core')
 const fs = require('fs')
 const f= require('axios')
 const { randomInt } = require('crypto')
-// const { getRandomIPv6 } = require("@distube/ytdl-core/lib/utils");
 
-
-// git commit -4
 
 
 const port = 1000
@@ -332,7 +329,6 @@ const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
                   
                   // agent should be created once if you don't want to change your cookie
                   const agent = ytdl.createAgent(cookies, agentOptions);
-                  console.log(agent.localAddress)
 
 // io.on('connection', (socket)=>{
 //     console.log(`connected ${socket.id}`)
@@ -380,11 +376,12 @@ app.get('/', async (req, res)=>{
         //  }).on('error', (err)=>{
         //     return res.send(err)
         //  })
-        
-        
+                
+
         return res.redirect(body.url)
+       
     }
-    return res.status(200).json(body)
+    return res.status(200).json(body).end()
     
 
 
@@ -437,37 +434,37 @@ app.get('/', async (req, res)=>{
 
 
 
-const validateRequest=async(url, type, authKey)=>{
-    var body
-    var code=200
+// const validateRequest=async(url, type, authKey)=>{
+//     var body
+//     var code=200
 
-    if(type==null) {
-        code=400 
-        body={
-            error:true, 
-            message:"bad request", 
-            code:code, 
+//     if(type==null) {
+//         code=400 
+//         body={
+//             error:true, 
+//             message:"bad request", 
+//             code:code, 
 
-        }
+//         }
         
-    }
+//     }
 
-    if(authKey==_authKey) {
-        body = await getRes(url, type)
-    }else{
-        code=401
-      body={
-        error:true, 
-        message:"unauthorized access", 
-        code:code
-      }
-    }
+//     if(authKey==_authKey) {
+//         body = await getRes(url, type)
+//     }else{
+//         code=401
+//       body={
+//         error:true, 
+//         message:"unauthorized access", 
+//         code:code
+//       }
+//     }
 
-    return {
-        code:code, 
-        body:body
-    }
-}
+//     return {
+//         code:code, 
+//         body:body
+//     }
+// }
 
 
 
@@ -493,12 +490,7 @@ const getRes=async(url, type)=>{
 
         break
 
-       // default
-        case apitypes[2]:
-            const dOnly = await downloadOnlyResponse(url)  
-            return dOnly
-        break
-
+   
 
         // case "savemp4":
         // const r = await videoOnlyResponse(url)
@@ -521,10 +513,17 @@ const getRes=async(url, type)=>{
 
         
       // related
-      case apitypes[3]:
+      case apitypes[2]:
             const rOnly = await relatedOnlyResponse(url)  
             return rOnly
         break
+
+       // download
+       case apitypes[3]:
+           const dOnly = await downloadOnlyResponse(url)  
+           return dOnly
+       break
+      
 
         // initial
         case apitypes[4]:
@@ -628,7 +627,7 @@ const videoOnlyResponse=async(url) =>{
     return dInfo.videoOnly
 }
 const audioOnlyResponse=async(url) =>{
-    const yt = await getYT(url) 
+    const yt = await getYT(url)
     const dInfo = getDownloadInfo(yt) 
     return dInfo.audioOnly
 }
@@ -686,7 +685,7 @@ const getDownloadInfo=(yt)=>{
     const audioOnly = ytdl.chooseFormat(audios, {quality:"140"})
 
     try{
-       var videoOnly= ytdl.chooseFormat(videos, {quality:"18",})
+       var videoOnly= ytdl.chooseFormat(videos, {quality: "18",})
     }catch(e){
         videoOnly= videos[0]
     }
