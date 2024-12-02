@@ -658,10 +658,8 @@ const normalJsonResponse=(yt, dInfo)=>{
 
 const getYT= async(url)=>{
       
-
-      
      // ytdl.getBasicInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ", { agent });
-    const yt= await  ytdl.getInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ", { agent });
+    const yt= await  ytdl.getInfo(url, { agent });
    // const yt= await ytdl.getInfo(url)
     return yt;
 }
