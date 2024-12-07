@@ -14,7 +14,7 @@ await new Promise((resolve) => setTimeout(resolve, 2000)); // 30 seconds delay
 
 
   const cookies = await page.cookies();
-  fs.writeFileSync('cookies.json', JSON.stringify(cookies, null, 2));
+  fs.writeFileSync('cook.json', JSON.stringify(cookies, null, 2));
   console.log('Cookies saved to cookies.json');
 
   await browser.close();
