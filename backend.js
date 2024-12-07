@@ -313,10 +313,9 @@ const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
                 
                   };
 
-                 
-                  
+    
                   // agent should be created once if you don't want to change your cookie
-                  const agent = ytdl.createAgent(cookies, agentOptions);
+                  const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cookies.json')), agentOptions);
 
 // io.on('connection', (socket)=>{
 //     console.log(`connected ${socket.id}`)
