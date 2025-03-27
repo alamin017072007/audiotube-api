@@ -1,3 +1,7 @@
+
+
+const { HttpsProxyAgent } = require('https-proxy-agent')
+
 const app = require('express')() 
 const http = require('http')
 const server = http.createServer(app)
@@ -8,8 +12,11 @@ const io = require('socket.io')(server)
 const ytdl = require('@distube/ytdl-core')
 //const ytdl = require('ytdl-core')
 const fs = require('fs')
-const f= require('axios')
+const axios = require('axios')
 const { randomInt } = require('crypto')
+
+
+
 
 
 
@@ -286,9 +293,23 @@ const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
                 
                   };
 
+                
+                
+
+                  const axiosInstance = axios.create({
+                    proxy: {
+                      host: '104.207.43.99', // Proxy host
+                      port: 3128,                // Proxy port
+                      protocol: 'http',          // Protocol (http or https)
+                    }
+                  });
+
+                    
+                //  const agent=  new HttpsProxyAgent("http://168.63.76.32:3128");
+                 //const agent = ytdl.createProxyAgent({ uri: "https://168.63.76.32:3128" });
     
                   // agent should be created once if you don't want to change your cookie
-                  const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')), agentOptions);
+                //  const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')), agentOptions);
 
 // io.on('connection', (socket)=>{
 //     console.log(`connected ${socket.id}`)
@@ -630,8 +651,8 @@ const normalJsonResponse=(yt, dInfo)=>{
 
 const getYT= async(url)=>{
       
-     // ytdl.getBasicInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ", { agent });
-    const yt= await  ytdl.getInfo(url, { agent });
+     // ytdl.getBasicInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ");
+    const yt= await  ytdl.getInfo(url);
    // const yt= await ytdl.getInfo(url)
     return yt;
 }
