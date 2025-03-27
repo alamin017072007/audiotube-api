@@ -40,251 +40,7 @@ const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
                               
                 ] 
 
-                const cookies = [
-{
-    "domain": ".youtube.com",
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "__Secure-1PAPISID",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": true,
-    "session": true,
-    "storeId": "0",
-    "value": "ReCp2bqGDwDss6we/A_sq0_tENJcKOAE01",
-    "id": 1
-},
-{
-    "domain": ".youtube.com",
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "__Secure-1PSID",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": true,
-    "session": true,
-    "storeId": "0",
-    "value": "g.a000qghanukqXF8OEzXtP4QH-NGGtGcvtPmAOJLSD0GDqWw8oMuEmEBW6g9cLmWVlnn1ThvX7AACgYKAd0SARASFQHGX2MiigPlsrD-UkM2Meb4qN9y6hoVAUF8yKqkJXkhRFJceBXUfMJHbvLS0076",
-    "id": 2
-},
-{
-    "domain": ".youtube.com",
-    "expirationDate": 1764690355,
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "__Secure-1PSIDCC",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": true,
-    "session": false,
-    "storeId": "0",
-    "value": "AKEyXzVORqqfHcHgQ-uJeYKQ96BNrDC_RwbvJvvDGYwj3myT9-Vmjw-XoXju-cvr6nxgzqiK3g",
-    "id": 3
-},
-{
-    "domain": ".youtube.com",
-    "expirationDate": 1764690144,
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "__Secure-1PSIDTS",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": true,
-    "session": false,
-    "storeId": "0",
-    "value": "sidts-CjIBQT4rX15CToPlErMQ5ueSo_ZYtYExRYULiBK7XSgpUGqkmCeoT5YUFHPnNxBse2PZbhAA",
-    "id": 4
-},
-{
-    "domain": ".youtube.com",
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "__Secure-3PAPISID",
-    "path": "/",
-    "sameSite": "no_restriction",
-    "secure": true,
-    "session": true,
-    "storeId": "0",
-    "value": "ReCp2bqGDwDss6we/A_sq0_tENJcKOAE01",
-    "id": 5
-},
-{
-    "domain": ".youtube.com",
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "__Secure-3PSID",
-    "path": "/",
-    "sameSite": "no_restriction",
-    "secure": true,
-    "session": true,
-    "storeId": "0",
-    "value": "g.a000qghanukqXF8OEzXtP4QH-NGGtGcvtPmAOJLSD0GDqWw8oMuEokdCvuxp_ETwJvPwDfLiFAACgYKAZMSARASFQHGX2MimAvKLorkWlIZYmFagiZL4hoVAUF8yKq6zMOr6-GX44DAeIVtMC2t0076",
-    "id": 6
-},
-{
-    "domain": ".youtube.com",
-    "expirationDate": 1764690355,
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "__Secure-3PSIDCC",
-    "path": "/",
-    "sameSite": "no_restriction",
-    "secure": true,
-    "session": false,
-    "storeId": "0",
-    "value": "AKEyXzWbymlkKQbYs-_8zBHPKGM5EibH8MyhJzXqHca_vZWLBlGxHythZTVBlri21BYHHewIeg",
-    "id": 7
-},
-{
-    "domain": ".youtube.com",
-    "expirationDate": 1764690144,
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "__Secure-3PSIDTS",
-    "path": "/",
-    "sameSite": "no_restriction",
-    "secure": true,
-    "session": false,
-    "storeId": "0",
-    "value": "sidts-CjIBQT4rX15CToPlErMQ5ueSo_ZYtYExRYULiBK7XSgpUGqkmCeoT5YUFHPnNxBse2PZbhAA",
-    "id": 8
-},
-{
-    "domain": ".youtube.com",
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "APISID",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": false,
-    "session": true,
-    "storeId": "0",
-    "value": "CPHGfCcM_1l4d8Aj/A1j9nzyoyJGRH6IOT",
-    "id": 9
-},
-{
-    "domain": ".youtube.com",
-    "expirationDate": 1733240877,
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "CONSISTENCY",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": true,
-    "session": false,
-    "storeId": "0",
-    "value": "AKreu9sIsSeR6hm1C0ISAVO53RHodF5uQ5Kz4A3BEvGLvitZd-bC9tVjIoi-HADYs6G5B2I07Y8IrjbqXVJQoGYrNFwiEK1ZDL5oY1aDAQiNFEUtv-DMPJleAujeRXfPnQFkSwyllyLGy0Xidz60gb2G",
-    "id": 10
-},
-{
-    "domain": ".youtube.com",
-    "expirationDate": 1733240877,
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "GPS",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": true,
-    "session": false,
-    "storeId": "0",
-    "value": "1",
-    "id": 11
-},
-{
-    "domain": ".youtube.com",
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "HSID",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": false,
-    "session": true,
-    "storeId": "0",
-    "value": "Arnc8YVC77KEKW-AP",
-    "id": 12
-},
-{
-    "domain": ".youtube.com",
-    "expirationDate": 1767713861,
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "LOGIN_INFO",
-    "path": "/",
-    "sameSite": "no_restriction",
-    "secure": true,
-    "session": false,
-    "storeId": "0",
-    "value": "AFmmF2swRgIhAPt33A0XUIJHRruEb8sK0N7xSlgXw4_PaN8OC3SXOm4GAiEAgkaOL14A3FkLoGehZwI5N42PhANu_nNCIaEB0M0Qy_0:QUQ3MjNmelVmWmZWdV9zWFZ0LVRicXp1bF9VRE1pbVBTbEZQXzFObFVhcTJVSjVPQVpudUx2YTJOUDlDOVQyajdTeXE5ZHJHZm41ZUE2RGpPS2d2Y2pCQUpBaU50a3hjcjgwN01GY0w1SzRjdG9fZzRUOV9lMmNpajdoTzJPVXBfUkdES3paSWJ5V2NDUnhIaTEwQXhwejVLQk1rY3ZrZ0ln",
-    "id": 13
-},
-{
-    "domain": ".youtube.com",
-    "expirationDate": 1767713877,
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "PREF",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": true,
-    "session": false,
-    "storeId": "0",
-    "value": "tz=Asia.Dhaka&f6=40000000&f7=100",
-    "id": 14
-},
-{
-    "domain": ".youtube.com",
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "SAPISID",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": true,
-    "session": true,
-    "storeId": "0",
-    "value": "ReCp2bqGDwDss6we/A_sq0_tENJcKOAE01",
-    "id": 15
-},
-{
-    "domain": ".youtube.com",
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "SID",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": false,
-    "session": true,
-    "storeId": "0",
-    "value": "g.a000qghanukqXF8OEzXtP4QH-NGGtGcvtPmAOJLSD0GDqWw8oMuEOJAgEN9HulxfW1gf6J0t7wACgYKAd4SARASFQHGX2Mi36goILD3NzwHaMy84q1iUBoVAUF8yKqBI_2452korH-aR1-IrUwD0076",
-    "id": 16
-},
-{
-    "domain": ".youtube.com",
-    "expirationDate": 1764690355,
-    "hostOnly": false,
-    "httpOnly": false,
-    "name": "SIDCC",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": false,
-    "session": false,
-    "storeId": "0",
-    "value": "AKEyXzU2kg_B6KoKpwusSWK0oCEsY2QGsdZTXjz4bzX_FLqqxl2f652MQRHP75AN43JAKjxk4w",
-    "id": 17
-},
-{
-    "domain": ".youtube.com",
-    "hostOnly": false,
-    "httpOnly": true,
-    "name": "SSID",
-    "path": "/",
-    "sameSite": "unspecified",
-    "secure": true,
-    "session": true,
-    "storeId": "0",
-    "value": "A4mLe-8_OVIMHsvey",
-    "id": 18
-}
-]
+                const cookies = []
                   // (Optional) http-cookie-agent / undici agent options
                   // Below are examples, NOT the recommended options
                   const agentOptions = {
@@ -296,20 +52,12 @@ const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
                 
                 
 
-                  const axiosInstance = axios.create({
-                    proxy: {
-                      host: '104.207.43.99', // Proxy host
-                      port: 3128,                // Proxy port
-                      protocol: 'http',          // Protocol (http or https)
-                    }
-                  });
-
                     
                 //  const agent=  new HttpsProxyAgent("http://168.63.76.32:3128");
                  //const agent = ytdl.createProxyAgent({ uri: "https://168.63.76.32:3128" });
     
                   // agent should be created once if you don't want to change your cookie
-                //  const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')), agentOptions);
+                  agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')), agentOptions);
 
 // io.on('connection', (socket)=>{
 //     console.log(`connected ${socket.id}`)
@@ -652,7 +400,7 @@ const normalJsonResponse=(yt, dInfo)=>{
 const getYT= async(url)=>{
       
      // ytdl.getBasicInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ");
-    const yt= await  ytdl.getInfo(url);
+    const yt= await  ytdl.getInfo(url, {agent});
    // const yt= await ytdl.getInfo(url)
     return yt;
 }
