@@ -16,7 +16,15 @@ const axios = require('axios')
 const { randomInt } = require('crypto')
 
 
+const cookies = fs.readFileSync('cook.json', 'utf8');
 
+const options = {
+  requestOptions: {
+    headers: {
+      cookie: cookies
+    }
+  }
+};
 
 
 const port = 1000
@@ -390,9 +398,9 @@ const normalJsonResponse=(yt, dInfo)=>{
 const getYT= async(url)=>{
       
      // ytdl.getBasicInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ");
-    const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')));
+  //  const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')));
     const yt= await  ytdl.getInfo(url,
-        {agent}
+      options 
     );
    // const yt= await ytdl.getInfo(url)
     return yt;
