@@ -390,13 +390,14 @@ const normalJsonResponse=(yt, dInfo)=>{
 const getYT= async(url)=>{
       
      // ytdl.getBasicInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ");
-   // const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')));
+    const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')));
     const yt= await  ytdl.getInfo(url,
-        
+        {agent}
     );
    // const yt= await ytdl.getInfo(url)
     return yt;
 }
+
 
 const getDownloadInfo=(yt)=>{
     const videos =  ytdl.filterFormats(yt.formats, 'audioandvideo')
