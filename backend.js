@@ -19,7 +19,6 @@ const { randomInt } = require('crypto')
 
 
 
-
 const port = 1000
 
 const apitypes= [ "all", "default","initial",  "download", "related" , 
@@ -40,24 +39,15 @@ const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
                               
                 ] 
 
-                const cookies = []
+
                   // (Optional) http-cookie-agent / undici agent options
                   // Below are examples, NOT the recommended options
-                  const agentOptions = {
-                    pipelining: 0,
-                    maxRedirections: 0,
-                
-                  };
-
-                
-                
 
                     
                 //  const agent=  new HttpsProxyAgent("http://168.63.76.32:3128");
                  //const agent = ytdl.createProxyAgent({ uri: "https://168.63.76.32:3128" });
     
                   // agent should be created once if you don't want to change your cookie
-                  agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')), agentOptions);
 
 // io.on('connection', (socket)=>{
 //     console.log(`connected ${socket.id}`)
@@ -400,7 +390,10 @@ const normalJsonResponse=(yt, dInfo)=>{
 const getYT= async(url)=>{
       
      // ytdl.getBasicInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ");
-    const yt= await  ytdl.getInfo(url, {agent});
+   // const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')));
+    const yt= await  ytdl.getInfo(url,
+        
+    );
    // const yt= await ytdl.getInfo(url)
     return yt;
 }
