@@ -1,52 +1,45 @@
+~~~{"id":"69415","variant":"standard","title":"ytdl-core with cookies example"}
 const express = require('express');
-const https = require('https'); // YouTube HTTPS
-const http = require('http');   // যদি HTTP লাগে
+const ytdl = require('ytdl-core');
 const app = express();
 
 app.use(express.json());
 
-app.post('/youtube', (req, res) => {
+app.post('/youtube-download', async (req, res) => {
     const { url, cookies } = req.body;
 
     if (!url || !cookies) {
-        return res.status(400).json({ error: true, message: "Please provide 'url' and 'cookies' in JSON." });
+        return res.status(400).json({ error: true, message: "Provide 'url' and 'cookies'" });
     }
 
+    // cookies convert to string
     const cookieHeader = Object.entries(cookies)
         .map(([key, value]) => `${key}=${value}`)
         .join('; ');
 
-    const parsedUrl = new URL(url);
-    const options = {
-        hostname: parsedUrl.hostname,
-        path: parsedUrl.pathname + parsedUrl.search,
-        method: 'GET',
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Cookie': cookieHeader,
-            'Referer': 'https://www.youtube.com/',
-        }
-    };
-
-    const protocol = parsedUrl.protocol === 'https:' ? https : http;
-
-    const request = protocol.request(options, (response) => {
-        let data = '';
-        response.on('data', chunk => data += chunk);
-        response.on('end', () => {
-            res.json({
-                error: false,
-                data: data
-            });
+    try {
+        const info = await ytdl.getInfo(url, {
+            requestOptions: {
+                headers: {
+                    'Cookie': cookieHeader,
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36'
+                }
+            }
         });
-    });
 
-    request.on('error', (err) => {
+        res.json({
+            error: false,
+            videoDetails: info.videoDetails,
+            formats: info.formats.map(f => ({
+                quality: f.qualityLabel,
+                itag: f.itag,
+                container: f.container,
+                url: f.url
+            }))
+        });
+    } catch (err) {
         res.status(500).json({ error: true, message: err.message });
-    });
-
-    request.end();
+    }
 });
 
 const PORT = process.env.PORT || 3000;
