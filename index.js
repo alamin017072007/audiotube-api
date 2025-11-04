@@ -1,4 +1,4 @@
-~~~{"id":"69415","variant":"standard","title":"ytdl-core with cookies example"}
+
 const express = require('express');
 const ytdl = require('ytdl-core');
 const app = express();
