@@ -15,7 +15,13 @@ const apitypes = [
     "info", "video", "audio", "videos", "audios", "dv", "da", "alltypes"
 ];
 
-// POST API
+// Helper: Convert JSON cookies to cookie string
+const convertCookiesToHeader = (cookies) => {
+    if (!cookies || typeof cookies !== 'object') return '';
+    return Object.entries(cookies).map(([k, v]) => `${k}=${v}`).join('; ');
+};
+
+// Main POST API
 app.post('/', async (req, res) => {
     try {
         let { url, type, cookies } = req.body;
@@ -24,34 +30,31 @@ app.post('/', async (req, res) => {
             return res.status(400).json({ error: true, message: "url and type are required" });
         }
 
-        // Clean URL
-        const objectToFind = '?si=';
-        if (url.includes(objectToFind)) {
-            url = url.split(objectToFind)[0];
-        }
+        // Clean URL (remove ?si=)
+        if (url.includes('?si=')) url = url.split('?si=')[0];
 
-        // Convert JSON cookies to cookie string
-        let cookieHeader = '';
-        if (cookies && typeof cookies === 'object') {
-            cookieHeader = Object.entries(cookies)
-                .map(([key, value]) => `${key}=${value}`)
-                .join('; ');
-        }
+        // Convert cookies JSON to string
+        const cookieHeader = convertCookiesToHeader(cookies);
 
-        // Options for ytdl
+        // ytdl options with proper headers
         const options = {
             requestOptions: {
                 headers: {
                     cookie: cookieHeader,
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                                  "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
                 }
             }
         };
 
-        // Fetch info from YouTube
+        // Fetch YouTube info
         const ytInfo = await ytdl.getInfo(url, options);
 
-        // Prepare response based on type
+        // Prepare normalized response
+        const videoOnly = ytdl.chooseFormat(ytdl.filterFormats(ytInfo.formats, 'audioandvideo'), { quality: '18' }) || null;
+        const audioOnly = ytdl.chooseFormat(ytdl.filterFormats(ytInfo.formats, 'audioonly'), { quality: '140' }) || null;
+        const related = ytInfo.related_videos || [];
+
         let responseData;
         switch (type) {
             case "all":
@@ -60,7 +63,9 @@ app.post('/', async (req, res) => {
             case "default":
                 responseData = {
                     videoDetails: ytInfo.videoDetails,
-                    formats: ytInfo.formats
+                    videoOnly,
+                    audioOnly,
+                    relatedVideos: related
                 };
                 break;
             case "video":
@@ -69,6 +74,15 @@ app.post('/', async (req, res) => {
             case "audio":
                 responseData = ytdl.filterFormats(ytInfo.formats, 'audio');
                 break;
+            case "related":
+                responseData = related;
+                break;
+            case "download":
+                responseData = { videoOnly, audioOnly };
+                break;
+            case "alltypes":
+                responseData = apitypes;
+                break;
             default:
                 responseData = { error: true, message: "Unknown type" };
         }
@@ -76,6 +90,10 @@ app.post('/', async (req, res) => {
         return res.status(200).json(responseData);
 
     } catch (err) {
+        // If YouTube detects bot or CAPTCHA
+        if (err.message.includes('Sign in to confirm you’re not a bot')) {
+            return res.status(403).json({ error: true, message: "YouTube bot detection triggered. Check cookies and User-Agent." });
+        }
         return res.status(500).json({ error: true, message: err.toString() });
     }
 });
