@@ -1,103 +1,80 @@
+~~~{"id":"69413","variant":"standard","title":"YouTube API Proxy using Express"}
 const express = require('express');
+const axios = require('axios');
 const app = express();
-app.use(express.json());
 
-const http = require('http');
-const server = http.createServer(app);
+app.use(express.json()); // JSON input parse করার জন্য
 
-const ytdl = require('@distube/ytdl-core');
+// POST endpoint
+app.post('/youtube', async (req, res) => {
+    const { url, cookies } = req.body;
 
-const port = 1000;
+    if (!url || !cookies) {
+        return res.status(400).json({ error: true, message: "Please provide 'url' and 'cookies' in JSON." });
+    }
 
-// API Types
-const apitypes = [
-    "all", "default", "initial", "download", "related",
-    "info", "video", "audio", "videos", "audios", "dv", "da", "alltypes"
-];
+    // JSON cookies কে header string এ convert করা
+    const cookieHeader = Object.entries(cookies)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('; ');
 
-// Helper: Convert JSON cookies to cookie string
-const convertCookiesToHeader = (cookies) => {
-    if (!cookies || typeof cookies !== 'object') return '';
-    return Object.entries(cookies).map(([k, v]) => `${k}=${v}`).join('; ');
-};
-
-// Main POST API
-app.post('/', async (req, res) => {
     try {
-        let { url, type, cookies } = req.body;
-
-        if (!url || !type) {
-            return res.status(400).json({ error: true, message: "url and type are required" });
-        }
-
-        // Clean URL (remove ?si=)
-        if (url.includes('?si=')) url = url.split('?si=')[0];
-
-        // Convert cookies JSON to string
-        const cookieHeader = convertCookiesToHeader(cookies);
-
-        // ytdl options with proper headers
-        const options = {
-            requestOptions: {
-                headers: {
-                    cookie: cookieHeader,
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-                                  "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
-                }
+        const response = await axios.get(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Cookie': cookieHeader,
+                'Referer': 'https://www.youtube.com/',
             }
-        };
+        });
 
-        // Fetch YouTube info
-        const ytInfo = await ytdl.getInfo(url, options);
-
-        // Prepare normalized response
-        const videoOnly = ytdl.chooseFormat(ytdl.filterFormats(ytInfo.formats, 'audioandvideo'), { quality: '18' }) || null;
-        const audioOnly = ytdl.chooseFormat(ytdl.filterFormats(ytInfo.formats, 'audioonly'), { quality: '140' }) || null;
-        const related = ytInfo.related_videos || [];
-
-        let responseData;
-        switch (type) {
-            case "all":
-                responseData = ytInfo;
-                break;
-            case "default":
-                responseData = {
-                    videoDetails: ytInfo.videoDetails,
-                    videoOnly,
-                    audioOnly,
-                    relatedVideos: related
-                };
-                break;
-            case "video":
-                responseData = ytdl.filterFormats(ytInfo.formats, 'video');
-                break;
-            case "audio":
-                responseData = ytdl.filterFormats(ytInfo.formats, 'audio');
-                break;
-            case "related":
-                responseData = related;
-                break;
-            case "download":
-                responseData = { videoOnly, audioOnly };
-                break;
-            case "alltypes":
-                responseData = apitypes;
-                break;
-            default:
-                responseData = { error: true, message: "Unknown type" };
-        }
-
-        return res.status(200).json(responseData);
-
+        res.json({
+            error: false,
+            data: response.data
+        });
     } catch (err) {
-        // If YouTube detects bot or CAPTCHA
-        if (err.message.includes('Sign in to confirm you’re not a bot')) {
-            return res.status(403).json({ error: true, message: "YouTube bot detection triggered. Check cookies and User-Agent." });
-        }
-        return res.status(500).json({ error: true, message: err.toString() });
+        res.status(500).json({
+            error: true,
+            message: err.response ? err.response.data : err.message
+        });
     }
 });
 
-server.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});
+// Server run
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+~~~
+
+✅ **ব্যবহার করার উপায়:**  
+
+1. Run করো Node.js এ:
+```bash
+node index.js
+```
+
+2. Postman বা অন্য কোনো HTTP client থেকে request পাঠাও:
+- Method: POST  
+- URL: `http://localhost:3000/youtube`  
+- Body (JSON):
+```json
+{
+  "url": "https://www.youtube.com",
+  "cookies": {
+    "SAPISID": "YOUR_SAPISID",
+    "HSID": "YOUR_HSID",
+    "SSID": "YOUR_SSID",
+    "APISID": "YOUR_APISID",
+    "SID": "YOUR_SID",
+    "__Secure-3PAPISID": "YOUR_3PAPISID",
+    "__Secure-3PSID": "YOUR_3PSID"
+  }
+}
+```
+
+📝 **Tip:**  
+- Fresh cookies ব্যবহার করতে হবে।  
+- Frequent requests করলে bot detection trigger হতে পারে।  
+
+আমি চাইলে এটাকে **dynamic video search** করার মতো API তেও upgrade করতে পারি, যাতে তুমি শুধু `query` পাঠাও আর response হিসেবে YouTube results পাই।  
+চাও আমি সেটা বানাই?
