@@ -1,4 +1,4 @@
-~~~{"id":"69413","variant":"standard","title":"YouTube API Proxy using Express"}
+
 const express = require('express');
 const axios = require('axios');
 const app = express();
