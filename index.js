@@ -1,440 +1,228 @@
+const express = require('express');
+const http = require('http');
+const fs = require('fs');
+const ytdl = require('@distube/ytdl-core');
+// const ytdl = require('ytdl-core')
 
-const express = require('express')
-const app= express()
-app.use(express.json())
+const app = express();
+app.use(express.json());
 
-const http = require('http')
-const server = http.createServer(app)
+const server = http.createServer(app);
+const port = 1000;
 
-const ytdl = require('@distube/ytdl-core')
-//const ytdl = require('ytdl-core')
-const fs = require('fs')
+// --- Constants ---
+const _authKey = "1138";
+const apitypes = [
+  "all", "default", "initial", "download", "related",
+  "info", "video", "audio", "videos", "audios",
+  "dv", "da", "alltypes"
+];
 
+const urlList = [
+  "https://www.youtube.com/watch?v=QOMnzE2Ujzc",
+  "https://www.youtube.com/watch?v=s-00rrCI8ac",
+  "https://www.youtube.com/watch?v=dWBgNHT4ipE",
+  "https://www.youtube.com/watch?v=rL6qQ49hBlQ",
+  "https://www.youtube.com/watch?v=Jk0Xv1adP3s",
+  "https://www.youtube.com/watch?v=lW9djo-zm7k",
+  "https://www.youtube.com/watch?v=9OZtJUEXykE",
+  "https://www.youtube.com/watch?v=IH6Z2Hid338",
+  "https://www.youtube.com/watch?v=Mev3TVUNqbI",
+  "https://www.youtube.com/watch?v=De-bLfEUeLE"
+];
 
+let options = {};
 
-const port = 1000
+// ====================================================
+// =============== Main POST API ======================
+// ====================================================
 
-const apitypes= [ "all", "default","initial",  "download", "related" , 
-    "info", "video", "audio", "videos", "audios", "dv", "da" ,"alltypes",   ]
+app.post('/', async (req, res) => {
+  try {
+    let url = req.query.url;
+    const type = req.query.type;
+    const cookiesInput = req.body.cookies;
 
-// hello world
-const _authKey = "1138"
-const urlList=[ "https://www.youtube.com/watch?v=QOMnzE2Ujzc", 
-                "https://www.youtube.com/watch?v=s-00rrCI8ac", 
-                 "https://www.youtube.com/watch?v=dWBgNHT4ipE", 
-                 "https://www.youtube.com/watch?v=rL6qQ49hBlQ", 
-                 "https://www.youtube.com/watch?v=Jk0Xv1adP3s", 
-                 "https://www.youtube.com/watch?v=lW9djo-zm7k", 
-                 "https://www.youtube.com/watch?v=9OZtJUEXykE", 
-                 "https://www.youtube.com/watch?v=IH6Z2Hid338",
-                 "https://www.youtube.com/watch?v=Mev3TVUNqbI", 
-                 "https://www.youtube.com/watch?v=De-bLfEUeLE"
-                              
-                ] 
+    // --- Convert cookies to string ---
+    let cookieString = "";
 
-
-var options = {}
-
-      
-// io.on('connection', (socket)=>{
-//     console.log(`connected ${socket.id}`)
-//     socket.on('listen', async(json)=>{
-         
-//         console.log(`new reuqest - ${socket.id} - ${url}`)
-//         const res = await getRes(json.url, json.type)
-//         socket.emit("listen",res)
-       
-//     })
-// })
-
-
-
-app.post('/', async (req, res)=>{
-    try{
-     
-    /////// ------------------ code for api ---------------
-
-    var url = req.query.url
-    const type= req.query.type
-    //const authKey = req.query.authkey 
-    const cJson = req.body.cookies
-
-    console.log(cJson)
-  
-
-    // Convert JSON to raw cookie string
-    // const cookieStr = Object.entries(cJson)
-    //   .map(([key, value]) => `${key}=${value}`)
-    //   .join('; ');
-
-       options= {
-         requestOptions: {
-           headers: {
-             cookie: cJson?.toString()
-           }
-         }
-       }
-    
-    // console.log(cJson); 
-
-    const objectToFind= '?si='
-    if( url!=null && url.toString().indexOf(objectToFind) > -1){
-        url= url.split(objectToFind)[0]
+    if (typeof cookiesInput === "string") {
+      cookieString = cookiesInput;
+    } else if (Array.isArray(cookiesInput)) {
+      cookieString = cookiesInput.map(c => `${c.name}=${c.value}`).join("; ");
+    } else if (typeof cookiesInput === "object" && cookiesInput !== null) {
+      cookieString = Object.entries(cookiesInput)
+        .map(([k, v]) => `${k}=${v}`)
+        .join("; ");
     }
 
-    const body = await getRes(url, type)
-   // const r = await validateRequest(url, type, authKey)
-    
-    //if(type=="downloadvideo" || type == "downloadaudio" || type=="da" || type=="dv" ){
-        //  const mimeType = type == 'dv'?"mp4":"mp3" 
-        //  const id = getRandom(11111, 99999);
-        //  const filePath= `./${id}.${mimeType}`
-        //  await https.get(body.url, async(r)=>{
-        //     r.pipe(fs.createWriteStream(filePath).on('finish', ()=>{
-        //         console.log(`${id} - downloaded`)
-        //         return  res.download(filePath)
-        //     }).on('error', (err)=>{
-          
-        //     }) )
-        //  }).on('error', (err)=>{
-        //     return res.send(err)
-        //  })
-                
-
-       // return res.redirect(body.url)
-       
-   // }
-    return res.status(200).json(body).end()
-    
-
-
-  
-
- 
-
-    ////// --------------- end of api ---------------- 
-
-
-
-
-    //// ----------- code for root api ----------------- 
-
-
-// const urls=['https://audiotubeapi.onrender.com',
-// 'https://audiotubeapi-2.onrender.com',
-// 'https://audiotubeapi.onrender.com',
-// 'https://audiotubeapi-2.onrender.com']
-
-
-//     var url = req.query.url
-//     const type= req.query.type
-//     const authKey = req.query.authkey
-
-// //updated on 26/10/2023 12:20PM
-
-//     const objectToFind= '?si='
-//     if( url!=null && url.toString().indexOf(objectToFind) > -1){
-//         url= url.split(objectToFind)[0]
-//     }
-
-   
-//    const urlonr=urls.at(1)
-//     const urlonr= urls.at(getRandom(0,urls.length-1))
-//     const body= await f.get(`${urlonr}?url=${url}&type=${type}`)
-//     const b= body.data.add = {'asff':''}
-
-
-//      body.data.requested_url= urlonr
-//     res.status(200).json(body.data).end()
-
-
-
-    }catch(err){
-        res.status(500).send(err.toString())
-    }
-
-})
-
-
-
-// const validateRequest=async(url, type, authKey)=>{
-//     var body
-//     var code=200
-
-//     if(type==null) {
-//         code=400 
-//         body={
-//             error:true, 
-//             message:"bad request", 
-//             code:code, 
-
-//         }
-        
-//     }
-
-//     if(authKey==_authKey) {
-//         body = await getRes(url, type)
-//     }else{
-//         code=401
-//       body={
-//         error:true, 
-//         message:"unauthorized access", 
-//         code:code
-//       }
-//     }
-
-//     return {
-//         code:code, 
-//         body:body
-//     }
-// }
-
-
-
-
-const getRes=async(url, type)=>{
-    if(url!=null){
-        url= url.replace('live/', "watch?v=")
-    }
-
-
-    switch(type){
-        
-        // all 
-        case apitypes[0]:
-        const data = await allResponse(url)
-        return data
-        break
-
-        // default
-        case apitypes[1]:
-         const format = await defaultResponse(url)  
-         return format
-
-        break
-
-   
-
-        // case "savemp4":
-        // const r = await videoOnlyResponse(url)
-        // https.get(r.url, (res) => {
-
-        //    const path = r.url;
-        //    const writeStream = fs.createWriteStream(path);
-        
-        //    res.pipe(writeStream);
-        
-        //    writeStream.on("finish", () => {
-        //       writeStream.close();
-        //       console.log("Download Completed!");
-        //    })
-        // })
-       
-        // break
-
-
-
-        
-      // related
-      case apitypes[2]:
-            const rOnly = await relatedOnlyResponse(url)  
-            return rOnly
-        break
-
-       // download
-       case apitypes[3]:
-           const dOnly = await downloadOnlyResponse(url)  
-           return dOnly
-       break
-      
-
-        // initial
-        case apitypes[4]:
-            const index= getRandom(0, urlList.length)
-            const newURL = urlList.at(index)
-            const i = await relatedOnlyResponse(newURL)
-            return i
-        break
-        
-       // info
-       case apitypes[5]:
-            const donly = await detailsOnlyResponse(url)  
-            return donly
-        break
-        
-        // video
-        case apitypes[6] :
-            const vOnly = await videoOnlyResponse(url)  
-            return vOnly
-        break
-        
-        // audio
-        case apitypes[7]:
-            const aOnly = await audioOnlyResponse(url)  
-            return aOnly
-
-        break
-        
-       // videos
-       case apitypes[8]:
-            const allV = await allVideosResponse(url)  
-            return allV
-        break 
-        
-        // audios
-        case apitypes[9]:
-            const allA = await allAudiosResponse(url)  
-            return allA
-        break    
-
-         // download video
-         case apitypes[10]:
-            const vd = await videoOnlyResponse(url)
-            return vd
-        break 
-
-         // download audio
-         case apitypes[11]:
-            const ad = await audioOnlyResponse(url)  
-            return ad
-        break 
-
-         // alltypes
-         case apitypes[12]:
-          // if(authKey==_authKey){ 
-            return  apitypes;
-            
-         //  }
-        break
-
+    // --- Prepare request options ---
+    options = cookieString
+      ? {
+          requestOptions: {
+            headers: {
+              cookie: cookieString,
+              "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
             }
-}
+          }
+        }
+      : {};
 
-
-
-const allResponse=async(url) =>{
- const yt = await getYT(url) 
-  return yt 
-}
-
-
-const defaultResponse=async(url)=>{
-    const yt = await getYT(url) 
-    const dInfo = await getDownloadInfo(yt) 
-    removeUnnecessaryFields(yt)
-    const json = normalJsonResponse(yt, dInfo)
-    return json
-
-}
-
-const downloadOnlyResponse=async(url)=>{
-  const yt = await getYT(url) 
-  removeUnnecessaryFields(yt) 
-  const dInfo = getDownloadInfo(yt) 
-  return dInfo
-}
-
-
-const relatedOnlyResponse=async(url)=>{
-    const yt = await getYT(url) 
-    return yt.related_videos
-}
-
-const detailsOnlyResponse=async(url)=>{
-    const yt = await getYT(url) 
-    return yt.videoDetails
-}
-
-const videoOnlyResponse=async(url) =>{
-    const yt = await getYT(url) 
-    const dInfo = getDownloadInfo(yt) 
-    return dInfo.videoOnly
-}
-const audioOnlyResponse=async(url) =>{
-    const yt = await getYT(url)
-    const dInfo = getDownloadInfo(yt) 
-    return dInfo.audioOnly
-}
-
-const allVideosResponse=async(url) =>{
-    const yt = await getYT(url) 
-    const videos = ytdl.filterFormats(yt.formats, 'video')
-    return videos
-}
-const allAudiosResponse=async(url) =>{
-    const yt = await getYT(url) 
-    const audios= ytdl.filterFormats(yt.formats, 'audio')
-    return audios 
-}
-
-
-
-
-const removeUnnecessaryFields=(yt)=>{
-    delete yt.videoDetails.embed
-    delete yt.videoDetails.availableCountries
-    delete yt.videoDetails.media
-    delete yt.videoDetails.storyboards
-    delete yt.videoDetails.chapters 
-}
-
-
-const normalJsonResponse=(yt, dInfo)=>{
-    
-    const json={
-        videoDetails:yt.videoDetails, 
-        videoOnly:dInfo.videoOnly, 
-        audioOnly:dInfo.audioOnly, 
-        relatedVideos:yt.related_videos
+    // Clean YouTube tracking param
+    const objectToFind = "?si=";
+    if (url && url.toString().includes(objectToFind)) {
+      url = url.split(objectToFind)[0];
     }
 
-    return json
-}
+    // Get final response
+    const body = await getRes(url, type);
+    return res.status(200).json(body).end();
 
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send(err.toString());
+  }
+});
 
-const getYT= async(url)=>{
-      
-     // ytdl.getBasicInfo("http://www.youtube.com/watch?v=aqz-KE-bpKQ");
-  //  const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cook.json')));
-    const yt= await  ytdl.getInfo(url,
-      options 
-    );
-   // const yt= await ytdl.getInfo(url)
-    return yt;
-}
+// ====================================================
+// =============== Helper Functions ===================
+// ====================================================
 
+const getRes = async (url, type) => {
+  if (!url) return { error: true, message: "URL not provided" };
 
-const getDownloadInfo=(yt)=>{
-    const videos =  ytdl.filterFormats(yt.formats, 'audioandvideo')
-    const audios =  ytdl.filterFormats(yt.formats, 'audioonly')
+  url = url.replace('live/', "watch?v=");
 
-    const audioOnly = ytdl.chooseFormat(audios, {quality:"140"})
+  switch (type) {
+    case "all":
+      return await allResponse(url);
+    case "default":
+      return await defaultResponse(url);
+    case "initial":
+      const randomURL = urlList[getRandom(0, urlList.length - 1)];
+      return await relatedOnlyResponse(randomURL);
+    case "download":
+      return await downloadOnlyResponse(url);
+    case "related":
+      return await relatedOnlyResponse(url);
+    case "info":
+      return await detailsOnlyResponse(url);
+    case "video":
+      return await videoOnlyResponse(url);
+    case "audio":
+      return await audioOnlyResponse(url);
+    case "videos":
+      return await allVideosResponse(url);
+    case "audios":
+      return await allAudiosResponse(url);
+    case "dv":
+      return await videoOnlyResponse(url);
+    case "da":
+      return await audioOnlyResponse(url);
+    case "alltypes":
+      return apitypes;
+    default:
+      return { error: true, message: "Invalid type" };
+  }
+};
 
-    try{
-       var videoOnly= ytdl.chooseFormat(videos, {quality: "18",})
-    }catch(e){
-        videoOnly= videos[0]
-    }
+// ====================================================
+// ============= YouTube Response Helpers =============
+// ====================================================
 
+const allResponse = async (url) => await getYT(url);
 
-    // if(videoOnly==null){
-        
-    // }
+const defaultResponse = async (url) => {
+  const yt = await getYT(url);
+  const dInfo = getDownloadInfo(yt);
+  removeUnnecessaryFields(yt);
+  return normalJsonResponse(yt, dInfo);
+};
 
-    return {
-        "videoOnly":videoOnly, 
-        "audioOnly":audioOnly
-    }
-}
+const downloadOnlyResponse = async (url) => {
+  const yt = await getYT(url);
+  removeUnnecessaryFields(yt);
+  return getDownloadInfo(yt);
+};
 
+const relatedOnlyResponse = async (url) => {
+  const yt = await getYT(url);
+  return yt.related_videos;
+};
 
+const detailsOnlyResponse = async (url) => {
+  const yt = await getYT(url);
+  return yt.videoDetails;
+};
 
-const getRandom=(min, max)=>{
-    return Math.floor(Math.random()*(max-min)+min)
-}
+const videoOnlyResponse = async (url) => {
+  const yt = await getYT(url);
+  const dInfo = getDownloadInfo(yt);
+  return dInfo.videoOnly;
+};
 
+const audioOnlyResponse = async (url) => {
+  const yt = await getYT(url);
+  const dInfo = getDownloadInfo(yt);
+  return dInfo.audioOnly;
+};
 
-server.listen(port, ()=>{
-    console.log(`listening on ${port}`)
-})
+const allVideosResponse = async (url) => {
+  const yt = await getYT(url);
+  return ytdl.filterFormats(yt.formats, 'video');
+};
 
+const allAudiosResponse = async (url) => {
+  const yt = await getYT(url);
+  return ytdl.filterFormats(yt.formats, 'audio');
+};
+
+// ====================================================
+// =============== Utility Functions ==================
+// ====================================================
+
+const removeUnnecessaryFields = (yt) => {
+  delete yt.videoDetails.embed;
+  delete yt.videoDetails.availableCountries;
+  delete yt.videoDetails.media;
+  delete yt.videoDetails.storyboards;
+  delete yt.videoDetails.chapters;
+};
+
+const normalJsonResponse = (yt, dInfo) => ({
+  videoDetails: yt.videoDetails,
+  videoOnly: dInfo.videoOnly,
+  audioOnly: dInfo.audioOnly,
+  relatedVideos: yt.related_videos
+});
+
+const getYT = async (url) => {
+  const yt = await ytdl.getInfo(url, options);
+  return yt;
+};
+
+const getDownloadInfo = (yt) => {
+  const videos = ytdl.filterFormats(yt.formats, 'audioandvideo');
+  const audios = ytdl.filterFormats(yt.formats, 'audioonly');
+  const audioOnly = ytdl.chooseFormat(audios, { quality: "140" });
+
+  let videoOnly;
+  try {
+    videoOnly = ytdl.chooseFormat(videos, { quality: "18" });
+  } catch (e) {
+    videoOnly = videos[0];
+  }
+
+  return { videoOnly, audioOnly };
+};
+
+const getRandom = (min, max) => Math.floor(Math.random() * (max - min) + min);
+
+// ====================================================
+// ================== Start Server ====================
+// ====================================================
+
+server.listen(port, () => {
+  console.log(`✅ Server is running on port ${port}`);
+});
